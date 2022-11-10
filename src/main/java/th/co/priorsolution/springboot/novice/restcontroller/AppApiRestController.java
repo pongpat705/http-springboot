@@ -7,7 +7,7 @@ import th.co.priorsolution.springboot.novice.model.ResponseModel;
 
 @RestController
 @RequestMapping("/api")
-public class AppApiRestcontroller {
+public class AppApiRestController {
 
     @GetMapping("/hello")
     public String hello(){
