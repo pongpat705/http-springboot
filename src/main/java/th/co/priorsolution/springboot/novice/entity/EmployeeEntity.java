@@ -12,27 +12,27 @@ import javax.persistence.Table;
 @Data
 public class EmployeeEntity {
     @Id
-    @Column(name = "employeeNumber")
+    @Column(name = "EMPLOYEE_NUMBER")
     private String employeeNumber;
 
-    @Column(name = "firstName")
+    @Column(name = "FIRST_NAME")
     private String firstName;
 
-    @Column(name = "lastName")
+    @Column(name = "LAST_NAME")
     private String lastName;
 
-    @Column(name = "extension")
+    @Column(name = "EXTENSION")
     private String extension;
 
-    @Column(name = "email")
+    @Column(name = "EMAIL")
     private String email;
 
-    @Column(name = "officeCode")
+    @Column(name = "OFFICE_CODE")
     private String officeCode;
 
-    @Column(name = "reportsTo")
+    @Column(name = "REPORTS_TO")
     private String reportsTo;
 
-    @Column(name = "jobTitle")
+    @Column(name = "JOB_TITLE")
     private String jobTitle;
 }

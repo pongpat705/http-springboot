@@ -11,7 +11,7 @@ import th.co.priorsolution.springboot.novice.model.ErrorModel;
 import th.co.priorsolution.springboot.novice.model.ResponseModel;
 import th.co.priorsolution.springboot.novice.model.nativesql.EmployeeOfficeInfos;
 import th.co.priorsolution.springboot.novice.repository.EmployeeRepository;
-import th.co.priorsolution.springboot.novice.repository.custom.EmployeeCustomRepository;
+import th.co.priorsolution.springboot.novice.repository.custom.EmployeeCustomRepositoryImpl;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,12 +23,12 @@ public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final EmployeeModelTransformComponent employeeModelTransformComponent;
     private final EmployeeValidatorComponent employeeValidatorComponent;
-    private final EmployeeCustomRepository employeeCustomRepository;
+    private final EmployeeCustomRepositoryImpl employeeCustomRepository;
 
     public EmployeeService(@Qualifier("employeeRepository") EmployeeRepository employeeRepository
             , EmployeeModelTransformComponent employeeModelTransformComponent
             , EmployeeValidatorComponent employeeValidatorComponent
-            , EmployeeCustomRepository employeeCustomRepository) {
+            , EmployeeCustomRepositoryImpl employeeCustomRepository) {
         this.employeeRepository = employeeRepository;
         this.employeeModelTransformComponent = employeeModelTransformComponent;
         this.employeeValidatorComponent = employeeValidatorComponent;
