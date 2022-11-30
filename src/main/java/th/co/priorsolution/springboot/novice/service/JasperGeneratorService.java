@@ -76,8 +76,6 @@ public class JasperGeneratorService {
 
     private byte[] normalGenerate(String jasperFile) throws FileNotFoundException {
 
-        RestTemplate restTemplate = new RestTemplate();
-
         Connection connection = this.reportCustomRepository.getConnection();
         byte[] r = new byte[1024];
         if(null != connection) {
@@ -86,16 +84,19 @@ public class JasperGeneratorService {
             Map<String, Object> parameters = new HashMap();
 
             FileInputStream fis = null;
+            InputStream inputStream = null;
+            JasperPrint jasperPrint = null;
             try {
                 fis = new FileInputStream(jasperFile);
+                inputStream = fis;
+                jasperPrint = JasperFillManager.fillReport(inputStream, parameters, connection);
+                r = JasperExportManager.exportReportToPdf(jasperPrint);
+                Instant finish = Instant.now();
+                long timeElapsed = Duration.between(start, finish).toMillis();
+                log.info("total time {}",timeElapsed);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 throw e;
-            }
-            InputStream inputStream = fis;
-            JasperPrint jasperPrint = null;
-            try {
-                jasperPrint = JasperFillManager.fillReport(inputStream, parameters, connection);
             } catch (JRException e) {
                 e.printStackTrace();
             } finally {
@@ -106,14 +107,6 @@ public class JasperGeneratorService {
                         e.printStackTrace();
                     }
                 }
-            }
-            try {
-                r = JasperExportManager.exportReportToPdf(jasperPrint);
-                Instant finish = Instant.now();
-                long timeElapsed = Duration.between(start, finish).toMillis();
-                log.info("total time {}",timeElapsed);
-            } catch (JRException e) {
-                e.printStackTrace();
             }
         }
 
