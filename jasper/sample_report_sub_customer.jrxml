@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.0.final using JasperReports Library version 6.11.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sample_report_sub_customer" pageWidth="456" pageHeight="100" columnWidth="456" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="7fdf2f2d-3fa8-41ff-8f65-8dfef70bfda5">
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.jrdax"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="customer_id" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select c.first_name,
+       c.last_name,
+       c.email,
+       case c.active when 1 then 'yes' else 'no' end as active,
+       date_format(c.create_date, '%d/%m/%Y') as create_date,
+       a.address,
+       a.address2,
+       a.district,
+       a.postal_code,
+       a.phone,
+       a.location,
+       c2.city,
+       c3.country
+from customer c
+         inner join address a on c.address_id = a.address_id
+inner join city c2 on a.city_id = c2.city_id
+inner join country c3 on c2.country_id = c3.country_id
+where customer_id = 431]]>
+	</queryString>
+	<field name="first_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="first_name"/>
+		<property name="com.jaspersoft.studio.field.label" value="first_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="customer"/>
+	</field>
+	<field name="last_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="last_name"/>
+		<property name="com.jaspersoft.studio.field.label" value="last_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="customer"/>
+	</field>
+	<field name="email" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="email"/>
+		<property name="com.jaspersoft.studio.field.label" value="email"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="customer"/>
+	</field>
+	<field name="active" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="active"/>
+		<property name="com.jaspersoft.studio.field.label" value="active"/>
+	</field>
+	<field name="create_date" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="create_date"/>
+		<property name="com.jaspersoft.studio.field.label" value="create_date"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="customer"/>
+	</field>
+	<field name="address" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="address"/>
+		<property name="com.jaspersoft.studio.field.label" value="address"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="address"/>
+	</field>
+	<field name="address2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="address2"/>
+		<property name="com.jaspersoft.studio.field.label" value="address2"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="address"/>
+	</field>
+	<field name="district" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="district"/>
+		<property name="com.jaspersoft.studio.field.label" value="district"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="address"/>
+	</field>
+	<field name="postal_code" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="postal_code"/>
+		<property name="com.jaspersoft.studio.field.label" value="postal_code"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="address"/>
+	</field>
+	<field name="phone" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="phone"/>
+		<property name="com.jaspersoft.studio.field.label" value="phone"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="address"/>
+	</field>
+	<field name="city" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="city"/>
+		<property name="com.jaspersoft.studio.field.label" value="city"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="city"/>
+	</field>
+	<field name="country" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="country"/>
+		<property name="com.jaspersoft.studio.field.label" value="country"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="country"/>
+	</field>
+	<title>
+		<band height="84" splitType="Prevent">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<frame>
+				<reportElement x="0" y="0" width="436" height="84" uuid="2c77fa77-50ae-43be-8f8e-87c478e51c3d">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textField textAdjust="StretchHeight">
+					<reportElement x="0" y="8" width="436" height="20" uuid="7394a0e7-11ce-44dc-8d16-be9be28acef0">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement markup="html"/>
+					<textFieldExpression><![CDATA[$F{first_name}+" "+$F{last_name}+"<b>&nbsp;email:&nbsp;</b>"+$F{email}+"<b>&nbsp;is active:&nbsp;</b>"+$F{active}+"<b>&nbsp;join date:&nbsp;</b>"+$F{create_date}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="0" y="36" width="436" height="20" uuid="907aee2f-6ef2-4ae2-9008-0c89098ca72e">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<textElement markup="html"/>
+					<textFieldExpression><![CDATA["<b>address:&nbsp;</b>"+$F{address}+" "+$F{address2}+"<b>district:&nbsp;</b>"+$F{district}+"<b>postal code:&nbsp;</b>"+$F{postal_code}+"<b>phone nr:&nbsp;</b>"+$F{phone}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="0" y="64" width="436" height="20" uuid="0abb5340-7701-4416-96fa-d55dab8cf56a">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<textFieldExpression><![CDATA[$F{city}+" "+$F{country}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</title>
+</jasperReport>

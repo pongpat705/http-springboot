@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.0.final using JasperReports Library version 6.11.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sample_report" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="023edf1a-57ef-421d-997b-ff2aa8aef342">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.jrdax"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="customer_id" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT  f.title , f.release_year
+, a.address as store_branch
+FROM rental r
+inner join inventory i on r.inventory_id  = i.inventory_id 
+inner join film f on i.film_id  = f.film_id 
+inner join store s on i.store_id = s.store_id 
+inner join address a on s.address_id  = a.address_id
+
+where r.customer_id = $P{customer_id}]]>
+	</queryString>
+	<field name="title" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="title"/>
+		<property name="com.jaspersoft.studio.field.label" value="title"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="film"/>
+	</field>
+	<field name="release_year" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.name" value="release_year"/>
+		<property name="com.jaspersoft.studio.field.label" value="release_year"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="film"/>
+	</field>
+	<field name="store_branch" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="address"/>
+		<property name="com.jaspersoft.studio.field.label" value="store_branch"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="address"/>
+	</field>
+	<group name="BranchGroup">
+		<groupExpression><![CDATA[$F{store_branch}]]></groupExpression>
+		<groupHeader>
+			<band height="30" splitType="Immediate">
+				<textField isBlankWhenNull="true">
+					<reportElement x="0" y="0" width="555" height="30" uuid="fdbddc1e-0b72-496a-8500-f99c95c771ec">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5c31fb50-f14d-4c9d-af9c-49f528a19170"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<box padding="5"/>
+					<textFieldExpression><![CDATA["store branch "+$F{store_branch}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="30" splitType="Prevent">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement x="163" y="0" width="230" height="30" uuid="c956952b-161e-4461-ad12-29867e770a46"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="18"/>
+				</textElement>
+				<text><![CDATA[Rental film report]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="100" splitType="Immediate">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField>
+				<reportElement x="456" y="0" width="100" height="30" uuid="b5b1bf89-41f4-430a-9105-25f88fc73cab"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<frame>
+				<reportElement x="0" y="0" width="456" height="100" uuid="9c0c7ee0-338b-4a44-b207-609df311840b"/>
+				<subreport overflowType="NoStretch">
+					<reportElement x="0" y="0" width="456" height="100" uuid="9ad3aa78-fc5f-4cac-9fb2-fa6a4c52108a">
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<parametersMapExpression><![CDATA[$P{REPORT_PARAMETERS_MAP}]]></parametersMapExpression>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression><![CDATA["./sample_report_sub_customer.jasper"]]></subreportExpression>
+				</subreport>
+			</frame>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="30" splitType="Immediate">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement x="0" y="0" width="278" height="30" uuid="29382c57-19fe-4988-af01-33f4f0951be4">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="db6b5340-5365-497e-acf6-df5d08abf910"/>
+				</reportElement>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[title]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="278" y="0" width="277" height="30" uuid="7ce76425-2031-49b5-9549-1a7fd46e461f">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c5377743-b651-439d-bbb2-cfb2cd7529d1"/>
+				</reportElement>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[release_year]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="30" splitType="Immediate">
+			<textField>
+				<reportElement x="0" y="0" width="278" height="30" uuid="d3bb400c-f3a4-4ef4-8772-5d2795fb2f10">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="db6b5340-5365-497e-acf6-df5d08abf910"/>
+				</reportElement>
+				<box padding="5">
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textFieldExpression><![CDATA[$F{title}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="278" y="0" width="277" height="30" uuid="949cbd6d-e3d9-4fe0-b422-d541af4fbb8e">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c5377743-b651-439d-bbb2-cfb2cd7529d1"/>
+				</reportElement>
+				<box padding="5">
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textFieldExpression><![CDATA[$F{release_year}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="30" splitType="Stretch">
+			<textField>
+				<reportElement x="456" y="0" width="100" height="30" uuid="5b3a4e55-3cf8-4b60-bd2a-fd1d5c7a3b46"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="30" splitType="Stretch">
+			<textField>
+				<reportElement x="450" y="0" width="100" height="30" uuid="e17702aa-629c-42ce-a70f-b9f5455a09a8"/>
+				<textFieldExpression><![CDATA[$V{PAGE_COUNT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>
