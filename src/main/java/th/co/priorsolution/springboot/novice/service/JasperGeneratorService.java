@@ -11,6 +11,7 @@ import org.springframework.web.client.RestTemplate;
 import th.co.priorsolution.springboot.novice.model.ResponseModel;
 import th.co.priorsolution.springboot.novice.repository.custom.ReportCustomRepository;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.sql.Connection;
@@ -37,7 +38,7 @@ public class JasperGeneratorService {
         this.reportCustomRepository = reportCustomRepository;
     }
 
-    public void getPdf(HttpServletResponse httpServletResponse){
+    public void getPdf(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse){
 
         log.info("getPdf");
         try{
@@ -46,7 +47,7 @@ public class JasperGeneratorService {
             httpServletResponse.setHeader("Content-Disposition"
                     , "attachment; filename=" + "normal"+ new Date().getTime()+".pdf");
              OutputStream outputStream = httpServletResponse.getOutputStream();
-             outputStream.write(this.normalGenerate(this.jasperFile));
+             outputStream.write(this.generateCustomerReport(this.jasperFile, httpServletRequest.getParameter("customerId")));
              outputStream.flush();
 
         } catch (Exception e) {
@@ -74,7 +75,7 @@ public class JasperGeneratorService {
 
     }
 
-    private byte[] normalGenerate(String jasperFile) throws FileNotFoundException {
+    private byte[] generateCustomerReport(String jasperFile, String customerId) throws FileNotFoundException {
 
         Connection connection = this.reportCustomRepository.getConnection();
         byte[] r = new byte[1024];
@@ -82,6 +83,7 @@ public class JasperGeneratorService {
             Instant start = Instant.now();
             log.info("start time ");
             Map<String, Object> parameters = new HashMap();
+            parameters.put("customer_id", customerId);
 
             FileInputStream fis = null;
             InputStream inputStream = null;

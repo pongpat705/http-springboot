@@ -5,6 +5,8 @@ import th.co.priorsolution.springboot.novice.model.NameModel;
 import th.co.priorsolution.springboot.novice.model.PersonModel;
 import th.co.priorsolution.springboot.novice.model.ResponseModel;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping("/api")
 public class AppApiRestController {
@@ -31,7 +33,8 @@ public class AppApiRestController {
     }
 
     @PostMapping("/hi")
-    public ResponseModel<PersonModel> postHi(@RequestBody NameModel model){
+    public ResponseModel<PersonModel> postHi(HttpServletRequest request, @RequestBody NameModel model){
+
             ResponseModel<PersonModel> result = new ResponseModel<>();
 
             PersonModel personModel = new PersonModel();

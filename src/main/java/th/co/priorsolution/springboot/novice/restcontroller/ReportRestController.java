@@ -2,6 +2,7 @@ package th.co.priorsolution.springboot.novice.restcontroller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import th.co.priorsolution.springboot.novice.service.JasperGeneratorService;
 
@@ -19,7 +20,7 @@ public class ReportRestController {
     }
 
     @GetMapping("/normal/pdf")
-    public void getNormalPdf(HttpServletRequest request, HttpServletResponse response) {
-        this.jasperGeneratorService.getPdf(response);
+    public void getNormalPdf(@RequestParam("customerId") String customerId, HttpServletRequest request, HttpServletResponse response) {
+        this.jasperGeneratorService.getPdf(request, response);
     }
 }
