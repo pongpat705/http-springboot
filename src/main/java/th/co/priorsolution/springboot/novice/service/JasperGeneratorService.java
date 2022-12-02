@@ -31,6 +31,8 @@ public class JasperGeneratorService {
 
     @Value("${app.jasperFile}")
     private String jasperFile;
+    @Value("${app.jasperFolder}")
+    private String jasperFolder;
 
     private ReportCustomRepository reportCustomRepository;
 
@@ -47,7 +49,13 @@ public class JasperGeneratorService {
             httpServletResponse.setHeader("Content-Disposition"
                     , "attachment; filename=" + "normal"+ new Date().getTime()+".pdf");
              OutputStream outputStream = httpServletResponse.getOutputStream();
-             outputStream.write(this.generateCustomerReport(this.jasperFile, httpServletRequest.getParameter("customerId")));
+             String jasperFile = this.jasperFolder+this.jasperFile;
+
+            Map<String, Object> parameters = new HashMap();
+            parameters.put("customer_id", httpServletRequest.getParameter("customerId"));
+            parameters.put("jasper_folder", this.jasperFolder);
+
+             outputStream.write(this.generateCustomerReport(jasperFile, parameters));
              outputStream.flush();
 
         } catch (Exception e) {
@@ -75,15 +83,13 @@ public class JasperGeneratorService {
 
     }
 
-    private byte[] generateCustomerReport(String jasperFile, String customerId) throws FileNotFoundException {
+    private byte[] generateCustomerReport(String jasperFile, Map<String, Object> parameters) throws FileNotFoundException {
 
         Connection connection = this.reportCustomRepository.getConnection();
         byte[] r = new byte[1024];
         if(null != connection) {
             Instant start = Instant.now();
             log.info("start time ");
-            Map<String, Object> parameters = new HashMap();
-            parameters.put("customer_id", customerId);
 
             FileInputStream fis = null;
             InputStream inputStream = null;
