@@ -7,8 +7,8 @@ import net.sf.jasperreports.engine.fill.JRFileVirtualizer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import th.co.priorsolution.springboot.novice.model.ResponseModel;
+import th.co.priorsolution.springboot.novice.model.nativesql.FilmByCustomerModel;
 import th.co.priorsolution.springboot.novice.repository.custom.ReportCustomRepository;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,11 +17,10 @@ import java.io.*;
 import java.sql.Connection;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 
 @Service
@@ -81,6 +80,67 @@ public class JasperGeneratorService {
 
         }
 
+    }
+
+    public void getCsv(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse){
+
+        log.info("getCsv");
+        try{
+            httpServletResponse.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+            httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+            httpServletResponse.setHeader("Content-Disposition"
+                    , "attachment; filename=" + "csv"+ new Date().getTime()+".csv");
+            OutputStream outputStream = httpServletResponse.getOutputStream();
+
+            byte[] csv = this.generateCustomerReportCsv(httpServletRequest.getParameter("customerId"));
+
+            outputStream.write(csv);
+            outputStream.flush();
+
+        } catch (Exception e) {
+            log.info("getCsv error {}",e.getMessage());
+
+            ResponseModel<Void> result = new ResponseModel<>();
+            result.setStatus(500);
+            result.setDescription("getCsv error "+e.getMessage());
+            ObjectMapper mapper = new ObjectMapper();
+            httpServletResponse.setHeader("Content-Disposition"
+                    , "inline");
+            httpServletResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            httpServletResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+
+            OutputStream outputStream = null;
+            try {
+                outputStream = httpServletResponse.getOutputStream();
+                outputStream.write(mapper.writeValueAsBytes(result));
+                outputStream.flush();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+
+        }
+
+    }
+
+    private byte[] generateCustomerReportCsv(String customerId){
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("%s|%s|%s|%s|%s","no","title","release year", "branch", "branch postal")).append("\r\n");
+
+        List<FilmByCustomerModel> datas = this.reportCustomRepository.getFilmByCustomerId(customerId);
+
+        for (int i = 0; i < datas.size(); i++) {
+            int rownum = i+1;
+
+            sb.append(String.format("%d|%s|%d|%s|%s",rownum
+                    , datas.get(i).getTitle()
+                    ,datas.get(i).getReleaseYear()
+                    , datas.get(i).getStoreBranch()
+                    , datas.get(i).getStorePostalCode()))
+                    .append("\r\n");
+        }
+
+
+        return sb.toString().getBytes();
     }
 
     private byte[] generateCustomerReport(String jasperFile, Map<String, Object> parameters) throws FileNotFoundException {

@@ -20,7 +20,13 @@ public class ReportRestController {
     }
 
     @GetMapping("/normal/pdf")
-    public void getNormalPdf(@RequestParam("customerId") String customerId, HttpServletRequest request, HttpServletResponse response) {
+    public void getNormalPdf(@RequestParam("customerId") String customerId
+            , HttpServletRequest request, HttpServletResponse response) {
         this.jasperGeneratorService.getPdf(request, response);
+    }
+
+    @GetMapping("/normal/csv")
+    public void getNormalCsv(HttpServletRequest request, HttpServletResponse response) {
+        this.jasperGeneratorService.getCsv(request, response);
     }
 }
