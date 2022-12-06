@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.fill.JRFileVirtualizer;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -120,6 +123,93 @@ public class JasperGeneratorService {
 
         }
 
+    }
+
+    public void getExcel(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse){
+
+        log.info("getExcel");
+        try{
+            httpServletResponse.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+            httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+            httpServletResponse.setHeader("Content-Disposition"
+                    , "attachment; filename=" + "excel"+ new Date().getTime()+".xlsx");
+            OutputStream outputStream = httpServletResponse.getOutputStream();
+
+            Workbook wb = this.generateCustomerReportExcel(httpServletRequest.getParameter("customerId"));
+            wb.write(outputStream);
+            outputStream.flush();
+
+        } catch (Exception e) {
+            log.info("getExcel error {}",e.getMessage());
+
+            ResponseModel<Void> result = new ResponseModel<>();
+            result.setStatus(500);
+            result.setDescription("getExcel error "+e.getMessage());
+            ObjectMapper mapper = new ObjectMapper();
+            httpServletResponse.setHeader("Content-Disposition"
+                    , "inline");
+            httpServletResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            httpServletResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+
+            OutputStream outputStream = null;
+            try {
+                outputStream = httpServletResponse.getOutputStream();
+                outputStream.write(mapper.writeValueAsBytes(result));
+                outputStream.flush();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+
+        }
+
+    }
+
+    private Workbook generateCustomerReportExcel(String customerId){
+
+        Workbook wb = new HSSFWorkbook();
+
+        Sheet sheet1 = wb.createSheet("sheet1");
+
+        int row  = 5;
+        Row headerRow = sheet1.createRow(row++);
+        int headerCol = 0;
+        Cell h1 = headerRow.createCell(headerCol++);
+        h1.setCellValue("no");
+
+        Cell h2 = headerRow.createCell(headerCol++);
+        h2.setCellValue("title");
+
+        Cell h3 = headerRow.createCell(headerCol++);
+        h3.setCellValue("release year");
+
+        Cell h4 = headerRow.createCell(headerCol++);
+        h4.setCellValue("branch");
+
+        Cell h5 = headerRow.createCell(headerCol++);
+        h5.setCellValue("branch postal");
+
+        List<FilmByCustomerModel> datas = this.reportCustomRepository.getFilmByCustomerId(customerId);
+        for (int i = 0; i < datas.size(); i++) {
+            int dataCol = 0;
+            int rownum = i+1;
+            Row dataRow = sheet1.createRow(row++);
+            Cell no = dataRow.createCell(dataCol++);
+            no.setCellValue(rownum);
+
+            Cell title = dataRow.createCell(dataCol++);
+            title.setCellValue(datas.get(i).getTitle());
+
+            Cell releaseYear = dataRow.createCell(dataCol++);
+            releaseYear.setCellValue(datas.get(i).getReleaseYear());
+
+            Cell branch = dataRow.createCell(dataCol++);
+            branch.setCellValue(datas.get(i).getStoreBranch());
+
+            Cell branchPostal = dataRow.createCell(dataCol++);
+            branchPostal.setCellValue(datas.get(i).getStorePostalCode());
+        }
+
+        return wb;
     }
 
     private byte[] generateCustomerReportCsv(String customerId){

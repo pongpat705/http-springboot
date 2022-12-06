@@ -29,4 +29,9 @@ public class ReportRestController {
     public void getNormalCsv(HttpServletRequest request, HttpServletResponse response) {
         this.jasperGeneratorService.getCsv(request, response);
     }
+
+    @GetMapping("/normal/excel")
+    public void getNormalExcel(HttpServletRequest request, HttpServletResponse response) {
+        this.jasperGeneratorService.getExcel(request, response);
+    }
 }
