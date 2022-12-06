@@ -7,6 +7,7 @@ import net.sf.jasperreports.engine.fill.JRFileVirtualizer;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -214,10 +215,8 @@ public class JasperGeneratorService {
 
     private Workbook generateCustomerReportExcel(String customerId){
 
-        Workbook wb = new HSSFWorkbook();
-
-       Sheet sheet1 = wb.createSheet("sheet1");
-
+        Workbook wb = new XSSFWorkbook();
+        Sheet sheet1 = wb.createSheet("sheet1");
         int row  = 5;
         Row headerRow = sheet1.createRow(row++);
         int headerCol = 0;
