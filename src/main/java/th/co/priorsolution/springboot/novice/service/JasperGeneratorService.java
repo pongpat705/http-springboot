@@ -10,6 +10,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import th.co.priorsolution.springboot.novice.model.ResponseModel;
 import th.co.priorsolution.springboot.novice.model.nativesql.FilmByCustomerModel;
 import th.co.priorsolution.springboot.novice.repository.custom.ReportCustomRepository;
@@ -164,11 +165,58 @@ public class JasperGeneratorService {
 
     }
 
+    public ResponseModel<Void> readCsvFile(MultipartFile file, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse){
+
+        ResponseModel<Void> result = new ResponseModel<>();
+        result.setStatus(200);
+        result.setDescription("OK");
+
+        log.info("readCsvFile");
+        try{
+
+            InputStreamReader inputStreamReader = new InputStreamReader(file.getInputStream());
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            int row = 0;
+            while (bufferedReader.ready()){
+                int col = 1;
+                String lineData = bufferedReader.readLine();
+                log.info("line data {}", lineData);
+                if(row >0){
+                    String[] lineDataArray = lineData.split("\\|");
+                    FilmByCustomerModel x = new FilmByCustomerModel();
+                    for (int i = 0; i < lineDataArray.length; i++) {
+                        if(i == 1){
+                            x.setTitle(lineDataArray[i]);
+                        }
+                        if(i == 2){
+                            x.setReleaseYear(Long.parseLong(lineDataArray[i]));
+                        }
+                        if(i == 3){
+                            x.setStoreBranch(lineDataArray[i]);
+                        }
+                        if(i == 4){
+                            x.setStorePostalCode(lineDataArray[i]);
+                        }
+                    }
+
+                }
+                row++;
+            }
+
+        } catch (Exception e) {
+            log.info("readCsvFile error {}",e.getMessage());
+            result.setStatus(500);
+            result.setDescription("readCsvFile error "+e.getMessage());
+
+        }
+        return result;
+    }
+
     private Workbook generateCustomerReportExcel(String customerId){
 
         Workbook wb = new HSSFWorkbook();
 
-        Sheet sheet1 = wb.createSheet("sheet1");
+       Sheet sheet1 = wb.createSheet("sheet1");
 
         int row  = 5;
         Row headerRow = sheet1.createRow(row++);
