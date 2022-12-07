@@ -22,10 +22,7 @@ import java.io.*;
 import java.sql.Connection;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Service
@@ -166,6 +163,41 @@ public class JasperGeneratorService {
 
     }
 
+    public List<FilmByCustomerModel> readCsvFromInputStream(InputStream inputStream) throws IOException {
+        List<FilmByCustomerModel> result = new ArrayList<>();
+
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+        int row = 0;
+        while (bufferedReader.ready()){
+            int col = 1;
+            String lineData = bufferedReader.readLine();
+            log.info("line data {}", lineData);
+            if(row >0){
+                String[] lineDataArray = lineData.split("\\|");
+                FilmByCustomerModel x = new FilmByCustomerModel();
+                for (int i = 0; i < lineDataArray.length; i++) {
+                    if(i == 1){
+                        x.setTitle(lineDataArray[i]);
+                    }
+                    if(i == 2){
+                        x.setReleaseYear(Long.parseLong(lineDataArray[i]));
+                    }
+                    if(i == 3){
+                        x.setStoreBranch(lineDataArray[i]);
+                    }
+                    if(i == 4){
+                        x.setStorePostalCode(lineDataArray[i]);
+                    }
+                }
+
+                result.add(x);
+
+            }
+            row++;
+        }
+        return result;
+    }
     public ResponseModel<Void> readCsvFile(MultipartFile file, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse){
 
         ResponseModel<Void> result = new ResponseModel<>();
@@ -174,35 +206,7 @@ public class JasperGeneratorService {
 
         log.info("readCsvFile");
         try{
-
-            InputStreamReader inputStreamReader = new InputStreamReader(file.getInputStream());
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            int row = 0;
-            while (bufferedReader.ready()){
-                int col = 1;
-                String lineData = bufferedReader.readLine();
-                log.info("line data {}", lineData);
-                if(row >0){
-                    String[] lineDataArray = lineData.split("\\|");
-                    FilmByCustomerModel x = new FilmByCustomerModel();
-                    for (int i = 0; i < lineDataArray.length; i++) {
-                        if(i == 1){
-                            x.setTitle(lineDataArray[i]);
-                        }
-                        if(i == 2){
-                            x.setReleaseYear(Long.parseLong(lineDataArray[i]));
-                        }
-                        if(i == 3){
-                            x.setStoreBranch(lineDataArray[i]);
-                        }
-                        if(i == 4){
-                            x.setStorePostalCode(lineDataArray[i]);
-                        }
-                    }
-
-                }
-                row++;
-            }
+            List<FilmByCustomerModel> filmByCustomerModels = this.readCsvFromInputStream(file.getInputStream());
 
         } catch (Exception e) {
             log.info("readCsvFile error {}",e.getMessage());
