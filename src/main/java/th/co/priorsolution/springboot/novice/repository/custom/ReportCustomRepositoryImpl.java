@@ -37,9 +37,9 @@ public class ReportCustomRepositoryImpl implements ReportCustomRepository{
                 , a.address as store_branch
                 , a.postal_code as store_postal_code
                 FROM rental r
-                inner join inventory i on r.inventory_id  = i.inventory_id\s
-                inner join film f on i.film_id  = f.film_id\s
-                inner join store s on i.store_id = s.store_id\s
+                inner join inventory i on r.inventory_id  = i.inventory_id
+                inner join film f on i.film_id  = f.film_id
+                inner join store s on i.store_id = s.store_id
                 inner join address a on s.address_id  = a.address_id
                 where r.customer_id = ?
                     """;

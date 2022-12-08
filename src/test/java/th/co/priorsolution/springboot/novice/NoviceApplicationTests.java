@@ -9,13 +9,13 @@ import th.co.priorsolution.springboot.novice.model.ResponseModel;
 import th.co.priorsolution.springboot.novice.model.nativesql.FilmByCustomerModel;
 import th.co.priorsolution.springboot.novice.repository.EmployeeRepository;
 import th.co.priorsolution.springboot.novice.repository.EmployeeRepositoryTestImpl;
+import th.co.priorsolution.springboot.novice.repository.ReportCustomerRepositoryImplTest;
+import th.co.priorsolution.springboot.novice.repository.custom.ReportCustomRepository;
 import th.co.priorsolution.springboot.novice.service.EmployeeService;
 import th.co.priorsolution.springboot.novice.service.JasperGeneratorService;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -32,6 +32,19 @@ class NoviceApplicationTests {
 
 		List<FilmByCustomerModel> result = jasperGeneratorService.readCsvFromInputStream(fileInputStream);
 		Assertions.assertTrue(result.get(16).getTitle().equals("INTERVIEW LIAISONS"));
+	}
+
+	public void testGenerateCsv() throws IOException {
+
+		ReportCustomRepository reportCustomRepository = new ReportCustomerRepositoryImplTest();
+		JasperGeneratorService jasperGeneratorService = new JasperGeneratorService(reportCustomRepository);
+
+		String filename = "csv"+ LocalDateTime.now().getNano()+".csv";
+		File file = new File("/home/pongpat/Documents/Fluke-Machine/downloads/recruit-prior/trainning/06122022/"+filename);
+		FileOutputStream fileOutputStream = new FileOutputStream(file);
+
+
+		jasperGeneratorService.generateCustomerReportCsv("444", fileOutputStream);
 	}
 
 }

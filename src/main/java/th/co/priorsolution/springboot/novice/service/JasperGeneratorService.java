@@ -94,10 +94,7 @@ public class JasperGeneratorService {
                     , "attachment; filename=" + "csv"+ new Date().getTime()+".csv");
             OutputStream outputStream = httpServletResponse.getOutputStream();
 
-            byte[] csv = this.generateCustomerReportCsv(httpServletRequest.getParameter("customerId"));
-
-            outputStream.write(csv);
-            outputStream.flush();
+            this.generateCustomerReportCsv(httpServletRequest.getParameter("customerId"), outputStream);
 
         } catch (Exception e) {
             log.info("getCsv error {}",e.getMessage());
@@ -263,25 +260,28 @@ public class JasperGeneratorService {
         return wb;
     }
 
-    private byte[] generateCustomerReportCsv(String customerId){
-        StringBuilder sb = new StringBuilder();
-        sb.append(String.format("%s|%s|%s|%s|%s","no","title","release year", "branch", "branch postal")).append("\r\n");
-
+    public void generateCustomerReportCsv(String customerId, OutputStream outputStream) throws IOException {
+        String header = String.format("%s|%s|%s|%s|%s","no","title","release year", "branch", "branch postal")+"\n";
+        outputStream.write(header.getBytes());
         List<FilmByCustomerModel> datas = this.reportCustomRepository.getFilmByCustomerId(customerId);
 
         for (int i = 0; i < datas.size(); i++) {
             int rownum = i+1;
 
-            sb.append(String.format("%d|%s|%d|%s|%s",rownum
+            String data = String.format("%d|%s|%d|%s|%s",rownum
                     , datas.get(i).getTitle()
                     ,datas.get(i).getReleaseYear()
                     , datas.get(i).getStoreBranch()
-                    , datas.get(i).getStorePostalCode()))
-                    .append("\r\n");
+                    , datas.get(i).getStorePostalCode())+"\n";
+            outputStream.write(data.getBytes());
+            if(i % 20 == 0) {
+                outputStream.flush();
+            }
         }
+        outputStream.flush();
 
 
-        return sb.toString().getBytes();
+
     }
 
     private byte[] generateCustomerReport(String jasperFile, Map<String, Object> parameters) throws FileNotFoundException {
