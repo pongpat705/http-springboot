@@ -1,0 +1,11 @@
+version: '2'
+services:
+  elk:
+    image: sebp/elk
+    ports:
+      - "5601:5601"
+      - "9200:9200"
+      - "5044:5044"
+      - "5000:5000"
+    volumes:
+      - /home/pongpat/Documents/Fluke-Machine/downloads/recruit-prior/trainning/09122022/logstash.conf:/etc/logstash/conf.d/30-output.conf
