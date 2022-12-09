@@ -1,8 +1,11 @@
 package th.co.priorsolution.springboot.novice.repository.custom;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import th.co.priorsolution.springboot.novice.logging.constant.LogType;
+import th.co.priorsolution.springboot.novice.logging.model.ComplexLog;
 import th.co.priorsolution.springboot.novice.model.nativesql.CustomerModel;
 import th.co.priorsolution.springboot.novice.model.nativesql.FilmByCustomerModel;
 
@@ -12,6 +15,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Repository
 public class ReportCustomRepositoryImpl implements ReportCustomRepository{
     private JdbcTemplate jdbcTemplate;
@@ -43,6 +47,12 @@ public class ReportCustomRepositoryImpl implements ReportCustomRepository{
                 inner join address a on s.address_id  = a.address_id
                 where r.customer_id = ?
                     """;
+
+        log.info("getFilmByCustomerId sql command", ComplexLog.builder()
+                .key(customerId)
+                        .data(sb)
+                .logType(LogType.REPOSITORY.code())
+                .build().toMap());
         List<Object> parameters = new ArrayList<>();
         parameters.add(customerId);
 
@@ -55,6 +65,11 @@ public class ReportCustomRepositoryImpl implements ReportCustomRepository{
             x.setStorePostalCode(rs.getString(cols++));
             return x;
         });
+        log.info("getFilmByCustomerId found {}", result.size(), ComplexLog.builder()
+                .key(customerId)
+                .data(sb)
+                .logType(LogType.REPOSITORY.code())
+                .build().toMap());
 
         return result;
     }

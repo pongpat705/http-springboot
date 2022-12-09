@@ -4,6 +4,9 @@ logging:
 app:
   jasperFolder: /home/pongpat/JaspersoftWorkspaceV2/SampleReport/
   jasperFile: sample_report.jasper
+hash:
+  algorithm: "SHA-256"
+  salt: "fcd27e75"
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/sakila

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration>
+
+<configuration scan="true">
+	<include
+			resource="org/springframework/boot/logging/logback/base.xml" />
+	<appender name="CONSOLE"
+			  class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+		</encoder>
+	</appender>
+	<appender name="logstash"
+			  class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+		<param name="Encoding" value="UTF-8" />
+		<remoteHost>127.0.0.1</remoteHost>
+		<port>5000</port>
+		<encoder class="net.logstash.logback.encoder.LogstashEncoder">
+			<customFields>{"app_name":"novice-app"}</customFields>
+			<jsonGeneratorDecorator class="net.logstash.logback.mask.MaskingJsonGeneratorDecorator">
+			</jsonGeneratorDecorator>
+		</encoder>
+	</appender>
+
+	<root level="error" additivity="false">
+		<appender-ref ref="logstash" />
+		<appender-ref ref="CONSOLE" />
+	</root>
+
+	<logger name="th.co.priorsolution.springboot.novice" level="debug" additivity="false">
+		<appender-ref ref="logstash" />
+		<appender-ref ref="CONSOLE" />
+	</logger>
+	<logger name="org.springframework" level="error" additivity="false">
+		<appender-ref ref="logstash" />
+		<appender-ref ref="CONSOLE" />
+	</logger>
+	<logger name="org.apache" level="error" additivity="false">
+		<appender-ref ref="logstash" />
+		<appender-ref ref="CONSOLE" />
+	</logger>
+	<logger name="org.apache.axis" level="error" additivity="false">
+		<appender-ref ref="logstash" />
+		<appender-ref ref="CONSOLE" />
+	</logger>
+</configuration>

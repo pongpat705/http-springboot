@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import th.co.priorsolution.springboot.novice.logging.constant.LogType;
+import th.co.priorsolution.springboot.novice.logging.model.ComplexLog;
 import th.co.priorsolution.springboot.novice.model.ResponseModel;
 import th.co.priorsolution.springboot.novice.model.nativesql.FilmByCustomerModel;
 import th.co.priorsolution.springboot.novice.repository.custom.ReportCustomRepository;
@@ -23,6 +25,8 @@ import java.sql.Connection;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
+
+import static net.logstash.logback.argument.StructuredArguments.kv;
 
 
 @Service
@@ -86,7 +90,12 @@ public class JasperGeneratorService {
 
     public void getCsv(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse){
 
-        log.info("getCsv");
+        String customerId = httpServletRequest.getParameter("customerId");
+
+        log.info("getCsv", ComplexLog.builder()
+                        .key(customerId)
+                        .logType(LogType.SERVICE.code())
+                .build().toMap());
         try{
             httpServletResponse.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
             httpServletResponse.setStatus(HttpServletResponse.SC_OK);
@@ -94,10 +103,13 @@ public class JasperGeneratorService {
                     , "attachment; filename=" + "csv"+ new Date().getTime()+".csv");
             OutputStream outputStream = httpServletResponse.getOutputStream();
 
-            this.generateCustomerReportCsv(httpServletRequest.getParameter("customerId"), outputStream);
+            this.generateCustomerReportCsv(customerId, outputStream);
 
         } catch (Exception e) {
-            log.info("getCsv error {}",e.getMessage());
+            log.info("getCsv error {}",e.getMessage(), ComplexLog.builder()
+                    .key(customerId)
+                    .logType(LogType.ERROR.code())
+                    .build().toMap());
 
             ResponseModel<Void> result = new ResponseModel<>();
             result.setStatus(500);
@@ -261,10 +273,18 @@ public class JasperGeneratorService {
     }
 
     public void generateCustomerReportCsv(String customerId, OutputStream outputStream) throws IOException {
+        log.info("generateCustomerReportCsv ",ComplexLog.builder()
+                .key(customerId)
+                .logType(LogType.SERVICE.code())
+                .build().toMap());
         String header = String.format("%s|%s|%s|%s|%s","no","title","release year", "branch", "branch postal")+"\n";
         outputStream.write(header.getBytes());
         List<FilmByCustomerModel> datas = this.reportCustomRepository.getFilmByCustomerId(customerId);
 
+        log.info("generateCustomerReportCsv writing data {}", datas.size(),ComplexLog.builder()
+                .key(customerId)
+                .logType(LogType.SERVICE.code())
+                .build());
         for (int i = 0; i < datas.size(); i++) {
             int rownum = i+1;
 
@@ -279,9 +299,10 @@ public class JasperGeneratorService {
             }
         }
         outputStream.flush();
-
-
-
+        log.info("generateCustomerReportCsv flushed data {}", datas.size(),ComplexLog.builder()
+                .key(customerId)
+                .logType(LogType.SERVICE.code())
+                .build().toMap());
     }
 
     private byte[] generateCustomerReport(String jasperFile, Map<String, Object> parameters) throws FileNotFoundException {
