@@ -13,7 +13,7 @@
 	<appender name="logstash"
 			  class="net.logstash.logback.appender.LogstashTcpSocketAppender">
 		<param name="Encoding" value="UTF-8" />
-		<remoteHost>127.0.0.1</remoteHost>
+		<remoteHost>localhost</remoteHost>
 		<port>5000</port>
 		<encoder class="net.logstash.logback.encoder.LogstashEncoder">
 			<customFields>{"app_name":"novice-app"}</customFields>

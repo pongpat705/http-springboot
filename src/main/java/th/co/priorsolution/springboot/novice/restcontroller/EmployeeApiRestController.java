@@ -26,7 +26,7 @@ public class EmployeeApiRestController {
 
     @PostMapping("/employee")
     public ResponseModel<Void> insertEmployee(@RequestBody EmployeeModel employeeModel){
-        return this.employeeService.insertEmployee(employeeModel);
+        return this.employeeService.insertEmployee(employeeModel.getEmployeeNumber(),employeeModel);
     }
 
     @PatchMapping("/employee")

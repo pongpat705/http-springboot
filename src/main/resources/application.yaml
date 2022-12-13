@@ -4,6 +4,8 @@ logging:
 app:
   jasperFolder: /home/pongpat/JaspersoftWorkspaceV2/SampleReport/
   jasperFile: sample_report.jasper
+  jwt:
+    secret
 hash:
   algorithm: "SHA-256"
   salt: "fcd27e75"

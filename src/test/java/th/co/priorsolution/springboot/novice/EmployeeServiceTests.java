@@ -3,8 +3,10 @@ package th.co.priorsolution.springboot.novice;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 import th.co.priorsolution.springboot.novice.component.EmployeeModelTransformComponent;
 import th.co.priorsolution.springboot.novice.component.EmployeeValidatorComponent;
+import th.co.priorsolution.springboot.novice.component.aop.AopConfiguration;
 import th.co.priorsolution.springboot.novice.model.EmployeeModel;
 import th.co.priorsolution.springboot.novice.model.ResponseModel;
 import th.co.priorsolution.springboot.novice.repository.EmployeeRepository;
@@ -13,6 +15,7 @@ import th.co.priorsolution.springboot.novice.service.EmployeeService;
 
 import java.io.IOException;
 
+@SpringBootTest(classes = {EmployeeValidatorComponent.class, AopConfiguration.class})
 public class EmployeeServiceTests {
 
     EmployeeRepository employeeRepository;

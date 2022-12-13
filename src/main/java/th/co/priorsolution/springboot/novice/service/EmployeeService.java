@@ -2,10 +2,13 @@ package th.co.priorsolution.springboot.novice.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import th.co.priorsolution.springboot.novice.component.EmployeeModelTransformComponent;
 import th.co.priorsolution.springboot.novice.component.EmployeeValidatorComponent;
+import th.co.priorsolution.springboot.novice.component.security.model.AuthenticatedUsers;
 import th.co.priorsolution.springboot.novice.entity.EmployeeEntity;
+import th.co.priorsolution.springboot.novice.logging.model.ComplexLog;
 import th.co.priorsolution.springboot.novice.model.EmployeeModel;
 import th.co.priorsolution.springboot.novice.model.ErrorModel;
 import th.co.priorsolution.springboot.novice.model.ResponseModel;
@@ -40,7 +43,13 @@ public class EmployeeService {
         result.setStatus(404);
         result.setDescription("employee not found");
 
-        log.info("getEmployeeByNumber {}", number);
+        AuthenticatedUsers x = (AuthenticatedUsers) SecurityContextHolder.getContext().getAuthentication();
+
+
+        log.info("getEmployeeByNumber {} by {}", number
+                ,  x.getCredentials().getUsername()
+                , ComplexLog.builder().key(number).build().toMap()
+        );
         try{
             Optional<EmployeeEntity> optionalEmployee = this.employeeRepository.findById(number);
 
@@ -50,9 +59,14 @@ public class EmployeeService {
                 result.setData(data);
                 result.setStatus(200);
                 result.setDescription("");
+                log.info("getEmployeeByNumber {} response 200", number, ComplexLog.builder()
+                        .key(number)
+                                .data(data)
+                        .build().toMap());
             }
         } catch (Exception e) {
-            log.info("getEmployeeByNumber error {}",e.getMessage());
+            log.info("getEmployeeByNumber error {}",e.getMessage(),
+                    ComplexLog.builder().key(number).build().toMap());
             result.setStatus(500);
             result.setDescription(e.getMessage());
         }
@@ -61,7 +75,7 @@ public class EmployeeService {
     }
 
 
-    public ResponseModel<Void> insertEmployee(EmployeeModel employeeModel){
+    public ResponseModel<Void> insertEmployee(String employeeNumber, EmployeeModel employeeModel){
         ResponseModel<Void> result = new ResponseModel<>();
         result.setStatus(500);
 
