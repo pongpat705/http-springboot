@@ -2,7 +2,7 @@ package th.co.priorsolution.springboot.novice.component;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
-import th.co.priorsolution.springboot.novice.model.EmployeeModel;
+import th.co.priorsolution.springboot.novice.model.EmployeeResponseModel;
 import th.co.priorsolution.springboot.novice.model.ErrorModel;
 
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import java.util.List;
 @Component
 public class EmployeeValidatorComponent {
 
-    public List<ErrorModel> validateEmployeeModel(EmployeeModel employeeModel) {
+    public List<ErrorModel> validateEmployeeModel(EmployeeResponseModel employeeModel) {
         List<ErrorModel> errorModelList = new ArrayList<>();
 
         if(StringUtils.isEmpty(employeeModel.getEmployeeNumber())){

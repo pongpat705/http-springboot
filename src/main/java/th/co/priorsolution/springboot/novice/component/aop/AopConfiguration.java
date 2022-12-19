@@ -7,7 +7,7 @@ import org.aspectj.lang.annotation.*;
 import org.springframework.stereotype.Component;
 import th.co.priorsolution.springboot.novice.entity.EmployeeEntity;
 import th.co.priorsolution.springboot.novice.logging.model.ComplexLog;
-import th.co.priorsolution.springboot.novice.model.EmployeeModel;
+import th.co.priorsolution.springboot.novice.model.EmployeeResponseModel;
 import th.co.priorsolution.springboot.novice.model.ResponseModel;
 
 import java.util.Arrays;
@@ -34,7 +34,7 @@ public class AopConfiguration {
     public Object doLogAroundEmployeeService(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         log.info("Around Before invoking getName() method");
         Object[] args = proceedingJoinPoint.getArgs();
-        EmployeeModel employeeModels = (EmployeeModel) args[0];
+        EmployeeResponseModel employeeModels = (EmployeeResponseModel) args[0];
 
 //        execute target method
         Object value = proceedingJoinPoint.proceed(args);

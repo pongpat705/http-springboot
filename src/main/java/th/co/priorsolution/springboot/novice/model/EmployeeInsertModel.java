@@ -1,9 +1,10 @@
 package th.co.priorsolution.springboot.novice.model;
 
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
-public class EmployeeModel {
+public class EmployeeInsertModel {
     private String employeeNumber;
     private String firstName;
     private String lastName;
@@ -12,4 +13,5 @@ public class EmployeeModel {
     private String officeCode;
     private String reportsTo;
     private String jobTitle;
+    private MultipartFile profilePicture;
 }

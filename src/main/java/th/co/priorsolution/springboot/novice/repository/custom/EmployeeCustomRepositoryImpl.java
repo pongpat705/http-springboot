@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import th.co.priorsolution.springboot.novice.model.EmployeeModel;
+import th.co.priorsolution.springboot.novice.model.EmployeeResponseModel;
 import th.co.priorsolution.springboot.novice.model.nativesql.EmployeeOfficeInfos;
 
 import java.sql.ResultSet;
@@ -29,7 +29,7 @@ public class EmployeeCustomRepositoryImpl implements EmployeeCustomRepository{
     }
 
     @Override
-    public List<EmployeeOfficeInfos> getEmployInfos(EmployeeModel employeeModel){
+    public List<EmployeeOfficeInfos> getEmployInfos(EmployeeResponseModel employeeModel){
 
         List<Object> params = new ArrayList<>();
 

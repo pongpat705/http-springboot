@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import th.co.priorsolution.springboot.novice.component.EmployeeModelTransformComponent;
 import th.co.priorsolution.springboot.novice.component.EmployeeValidatorComponent;
 import th.co.priorsolution.springboot.novice.component.aop.AopConfiguration;
-import th.co.priorsolution.springboot.novice.model.EmployeeModel;
+import th.co.priorsolution.springboot.novice.model.EmployeeResponseModel;
 import th.co.priorsolution.springboot.novice.model.ResponseModel;
 import th.co.priorsolution.springboot.novice.repository.EmployeeRepository;
 import th.co.priorsolution.springboot.novice.repository.EmployeeRepositoryTestImpl;
@@ -41,7 +41,7 @@ public class EmployeeServiceTests {
     @Test
     public void testInsertEmployeeExpectStatus501() throws IOException {
 //		mock input value
-        EmployeeModel employeeModel = new EmployeeModel();
+        EmployeeResponseModel employeeModel = new EmployeeResponseModel();
 //		assertion
         ResponseModel<Void> result = employeeService.insertEmployee(employeeModel);
         Assertions.assertTrue(result.getStatus() == 501);
@@ -50,7 +50,7 @@ public class EmployeeServiceTests {
     @Test
     public void testInsertEmployeeExpectEmployeeNumberEmpty() throws IOException {
 //		mock input value
-        EmployeeModel employeeModel = new EmployeeModel();
+        EmployeeResponseModel employeeModel = new EmployeeResponseModel();
         employeeModel.setExtension("x");
         employeeModel.setEmail("x");
         employeeModel.setLastName("x");
@@ -67,7 +67,7 @@ public class EmployeeServiceTests {
     @Test
     public void testInsertEmployeeExpectStatus500() throws IOException {
 //		mock input value
-        EmployeeModel employeeModel = new EmployeeModel();
+        EmployeeResponseModel employeeModel = new EmployeeResponseModel();
         employeeModel.setEmployeeNumber("x");
         employeeModel.setExtension("x");
         employeeModel.setEmail("x");

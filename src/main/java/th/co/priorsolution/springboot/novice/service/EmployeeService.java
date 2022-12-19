@@ -1,23 +1,33 @@
 package th.co.priorsolution.springboot.novice.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import th.co.priorsolution.springboot.novice.component.EmployeeModelTransformComponent;
 import th.co.priorsolution.springboot.novice.component.EmployeeValidatorComponent;
 import th.co.priorsolution.springboot.novice.component.security.model.AuthenticatedUsers;
 import th.co.priorsolution.springboot.novice.entity.EmployeeEntity;
 import th.co.priorsolution.springboot.novice.logging.model.ComplexLog;
-import th.co.priorsolution.springboot.novice.model.EmployeeModel;
+import th.co.priorsolution.springboot.novice.model.EmployeeInsertModel;
+import th.co.priorsolution.springboot.novice.model.EmployeeResponseModel;
+import th.co.priorsolution.springboot.novice.model.EmployeeResponseModel;
 import th.co.priorsolution.springboot.novice.model.ErrorModel;
 import th.co.priorsolution.springboot.novice.model.ResponseModel;
 import th.co.priorsolution.springboot.novice.model.nativesql.EmployeeOfficeInfos;
 import th.co.priorsolution.springboot.novice.repository.EmployeeRepository;
 import th.co.priorsolution.springboot.novice.repository.custom.EmployeeCustomRepositoryImpl;
 
-import java.util.List;
-import java.util.Optional;
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletResponse;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -38,8 +48,8 @@ public class EmployeeService {
         this.employeeCustomRepository = employeeCustomRepository;
     }
 
-    public ResponseModel<EmployeeModel> getEmployeeByNumber(String number){
-        ResponseModel<EmployeeModel> result = new ResponseModel<>();
+    public ResponseModel<EmployeeResponseModel> getEmployeeByNumber(String number){
+        ResponseModel<EmployeeResponseModel> result = new ResponseModel<>();
         result.setStatus(404);
         result.setDescription("employee not found");
 
@@ -55,7 +65,7 @@ public class EmployeeService {
 
             if(optionalEmployee.isPresent()){
                 EmployeeEntity employeeEntity = optionalEmployee.get();
-                EmployeeModel data = this.employeeModelTransformComponent.transFormEntityToModel(employeeEntity);
+                EmployeeResponseModel data = this.employeeModelTransformComponent.transFormEntityToModel(employeeEntity);
                 result.setData(data);
                 result.setStatus(200);
                 result.setDescription("");
@@ -75,7 +85,108 @@ public class EmployeeService {
     }
 
 
-    public ResponseModel<Void> insertEmployee(String employeeNumber, EmployeeModel employeeModel){
+    public void getEmployeeProfilePictureByNumber(String number, HttpServletResponse response){
+
+        AuthenticatedUsers x = (AuthenticatedUsers) SecurityContextHolder.getContext().getAuthentication();
+
+
+        log.info("getEmployeeProfilePictureByNumber {} by {}", number
+                ,  x.getCredentials().getUsername()
+                , ComplexLog.builder().key(number).build().toMap()
+        );
+        try{
+            response.setContentType(MediaType.IMAGE_PNG_VALUE);
+            response.setStatus(HttpServletResponse.SC_OK);
+            OutputStream outputStream = response.getOutputStream();
+
+            Optional<EmployeeEntity> optionalEmployee = this.employeeRepository.findById(number);
+
+            if(optionalEmployee.isPresent()){
+                EmployeeEntity employeeEntity = optionalEmployee.get();
+//                get picture
+                InputStream in = new FileInputStream(employeeEntity.getProfilePicture());
+                outputStream.write(IOUtils.toByteArray(in));
+                outputStream.flush();
+            }
+
+        } catch (Exception e) {
+            log.info("getEmployeeProfilePictureByNumber error {}",e.getMessage());
+
+            ResponseModel<Void> result = new ResponseModel<>();
+            result.setStatus(500);
+            result.setDescription("getEmployeeProfilePictureByNumber error "+e.getMessage());
+            ObjectMapper mapper = new ObjectMapper();
+            response.setHeader("Content-Disposition"
+                    , "inline");
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+
+            OutputStream outputStream = null;
+            try {
+                outputStream = response.getOutputStream();
+                outputStream.write(mapper.writeValueAsBytes(result));
+                outputStream.flush();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+
+        }
+
+    }
+
+    public ResponseModel<EmployeeResponseModel> uploadEmployeeProfilePicture(EmployeeInsertModel employeeInsertModel){
+        ResponseModel<EmployeeResponseModel> result = new ResponseModel<>();
+        result.setStatus(404);
+        result.setDescription("employee not found");
+
+        AuthenticatedUsers x = (AuthenticatedUsers) SecurityContextHolder.getContext().getAuthentication();
+
+
+        log.info("uploadEmployeeProfilePicture {} by {}", employeeInsertModel.getFirstName()
+                ,  x.getCredentials().getUsername()
+                , ComplexLog.builder().key(employeeInsertModel.getFirstName()).build().toMap()
+        );
+        try{
+            EmployeeEntity employeeEntity = this.employeeModelTransformComponent.transFormInsertModelToEntity(employeeInsertModel);
+
+            //save image to folder
+            String fileLocation = "/home/pongpat/Pictures/"+LocalDateTime.now().getNano()+".png";
+            employeeEntity.setProfilePicture(fileLocation);
+
+            File fileToWrite = new File(fileLocation);
+            FileOutputStream fo = new FileOutputStream(fileToWrite);
+            fo.write(employeeInsertModel.getProfilePicture().getBytes());
+            fo.flush();
+            fo.close();
+            //save data to db
+            this.employeeRepository.save(employeeEntity);
+            //transform response
+            EmployeeResponseModel employeeResponseModel = this.employeeModelTransformComponent
+                    .transFormEntityToModel(employeeEntity);
+            result.setData(employeeResponseModel);
+            result.setStatus(200);
+            result.setDescription("");
+            log.info("uploadEmployeeProfilePicture {} response 200", employeeResponseModel
+                    .getEmployeeNumber()
+
+                    , ComplexLog.builder()
+                    .key(employeeResponseModel.getEmployeeNumber())
+                    .data(employeeResponseModel)
+                    .build().toMap());
+
+        } catch (Exception e) {
+            log.info("getEmployeeByNumber error {}",e.getMessage(),
+                    ComplexLog.builder().key(employeeInsertModel.getFirstName()).build().toMap());
+            result.setStatus(500);
+            result.setDescription(e.getMessage());
+        }
+
+        return result;
+
+    }
+
+
+    public ResponseModel<Void> insertEmployee(String employeeNumber, EmployeeResponseModel employeeModel){
         ResponseModel<Void> result = new ResponseModel<>();
         result.setStatus(500);
 
@@ -105,7 +216,7 @@ public class EmployeeService {
         return result;
     }
 
-    public ResponseModel<Void> updateEmployee(EmployeeModel employeeModel){
+    public ResponseModel<Void> updateEmployee(EmployeeResponseModel employeeModel){
         ResponseModel<Void> result = new ResponseModel<>();
         result.setStatus(500);
         log.info("updateEmployee {}", employeeModel);
@@ -138,7 +249,7 @@ public class EmployeeService {
     }
 
 
-    public ResponseModel<List<EmployeeOfficeInfos>> getEmployeeOfficeInfos(EmployeeModel employeeModel){
+    public ResponseModel<List<EmployeeOfficeInfos>> getEmployeeOfficeInfos(EmployeeResponseModel employeeModel){
         ResponseModel<List<EmployeeOfficeInfos>> result = new ResponseModel<>();
         result.setStatus(404);
         result.setDescription("EmployeeOfficeInfos not found");

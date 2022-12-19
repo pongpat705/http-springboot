@@ -2,50 +2,67 @@ package th.co.priorsolution.springboot.novice.component;
 
 import org.springframework.stereotype.Component;
 import th.co.priorsolution.springboot.novice.entity.EmployeeEntity;
-import th.co.priorsolution.springboot.novice.model.EmployeeModel;
+import th.co.priorsolution.springboot.novice.model.EmployeeInsertModel;
+import th.co.priorsolution.springboot.novice.model.EmployeeResponseModel;
 
 @Component
 public class EmployeeModelTransformComponent {
 
-    public EmployeeModel transFormEntityToModel(EmployeeEntity employeeEntity){
-        EmployeeModel employeeModel = new EmployeeModel();
+    public EmployeeResponseModel transFormEntityToModel(EmployeeEntity employeeEntity){
+        EmployeeResponseModel EmployeeResponseModel = new EmployeeResponseModel();
 
-        employeeModel.setEmployeeNumber(employeeEntity.getEmployeeNumber());
-        employeeModel.setEmail(employeeEntity.getEmail());
-        employeeModel.setExtension(employeeEntity.getExtension());
-        employeeModel.setFirstName(employeeEntity.getFirstName());
-        employeeModel.setLastName(employeeEntity.getLastName());
-        employeeModel.setJobTitle(employeeEntity.getJobTitle());
-        employeeModel.setOfficeCode(employeeEntity.getOfficeCode());
-        employeeModel.setReportsTo(employeeEntity.getReportsTo());
+        EmployeeResponseModel.setEmployeeNumber(employeeEntity.getEmployeeNumber());
+        EmployeeResponseModel.setEmail(employeeEntity.getEmail());
+        EmployeeResponseModel.setExtension(employeeEntity.getExtension());
+        EmployeeResponseModel.setFirstName(employeeEntity.getFirstName());
+        EmployeeResponseModel.setLastName(employeeEntity.getLastName());
+        EmployeeResponseModel.setJobTitle(employeeEntity.getJobTitle());
+        EmployeeResponseModel.setOfficeCode(employeeEntity.getOfficeCode());
+        EmployeeResponseModel.setReportsTo(employeeEntity.getReportsTo());
+        EmployeeResponseModel.setProfilePicture("/api/employee/profile-picture/"+employeeEntity.getEmployeeNumber());
 
-        return employeeModel;
+        return EmployeeResponseModel;
     }
 
-    public EmployeeEntity transFormModelToEntity(EmployeeModel employeeModel){
+    public EmployeeEntity transFormModelToEntity(EmployeeResponseModel EmployeeResponseModel){
         EmployeeEntity employeeEntity = new EmployeeEntity();
 
-        employeeEntity.setEmployeeNumber(employeeModel.getEmployeeNumber());
-        employeeEntity.setEmail(employeeModel.getEmail());
-        employeeEntity.setExtension(employeeModel.getExtension());
-        employeeEntity.setFirstName(employeeModel.getFirstName());
-        employeeEntity.setLastName(employeeModel.getLastName());
-        employeeEntity.setJobTitle(employeeModel.getJobTitle());
-        employeeEntity.setOfficeCode(employeeModel.getOfficeCode());
-        employeeEntity.setReportsTo(employeeModel.getReportsTo());
+        employeeEntity.setEmployeeNumber(EmployeeResponseModel.getEmployeeNumber());
+        employeeEntity.setEmail(EmployeeResponseModel.getEmail());
+        employeeEntity.setExtension(EmployeeResponseModel.getExtension());
+        employeeEntity.setFirstName(EmployeeResponseModel.getFirstName());
+        employeeEntity.setLastName(EmployeeResponseModel.getLastName());
+        employeeEntity.setJobTitle(EmployeeResponseModel.getJobTitle());
+        employeeEntity.setOfficeCode(EmployeeResponseModel.getOfficeCode());
+        employeeEntity.setReportsTo(EmployeeResponseModel.getReportsTo());
 
         return employeeEntity;
     }
 
-    public void updateEntityByModel(EmployeeEntity employeeEntity, EmployeeModel employeeModel){
+    public EmployeeEntity transFormInsertModelToEntity(EmployeeInsertModel EmployeeResponseModel){
+        EmployeeEntity employeeEntity = new EmployeeEntity();
 
-        employeeEntity.setEmail(employeeModel.getEmail());
-        employeeEntity.setExtension(employeeModel.getExtension());
-        employeeEntity.setFirstName(employeeModel.getFirstName());
-        employeeEntity.setLastName(employeeModel.getLastName());
-        employeeEntity.setJobTitle(employeeModel.getJobTitle());
-        employeeEntity.setOfficeCode(employeeModel.getOfficeCode());
-        employeeEntity.setReportsTo(employeeModel.getReportsTo());
+        employeeEntity.setEmployeeNumber(EmployeeResponseModel.getEmployeeNumber());
+        employeeEntity.setEmail(EmployeeResponseModel.getEmail());
+        employeeEntity.setExtension(EmployeeResponseModel.getExtension());
+        employeeEntity.setFirstName(EmployeeResponseModel.getFirstName());
+        employeeEntity.setLastName(EmployeeResponseModel.getLastName());
+        employeeEntity.setJobTitle(EmployeeResponseModel.getJobTitle());
+        employeeEntity.setOfficeCode(EmployeeResponseModel.getOfficeCode());
+        employeeEntity.setReportsTo(EmployeeResponseModel.getReportsTo());
+
+        return employeeEntity;
+    }
+
+    public void updateEntityByModel(EmployeeEntity employeeEntity, EmployeeResponseModel EmployeeResponseModel){
+
+        employeeEntity.setEmail(EmployeeResponseModel.getEmail());
+        employeeEntity.setExtension(EmployeeResponseModel.getExtension());
+        employeeEntity.setFirstName(EmployeeResponseModel.getFirstName());
+        employeeEntity.setLastName(EmployeeResponseModel.getLastName());
+        employeeEntity.setJobTitle(EmployeeResponseModel.getJobTitle());
+        employeeEntity.setOfficeCode(EmployeeResponseModel.getOfficeCode());
+        employeeEntity.setReportsTo(EmployeeResponseModel.getReportsTo());
 
     }
 }

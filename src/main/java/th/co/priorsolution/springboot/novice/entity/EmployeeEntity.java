@@ -2,16 +2,14 @@ package th.co.priorsolution.springboot.novice.entity;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "employees")
 @Data
 public class EmployeeEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "EMPLOYEE_NUMBER")
     private String employeeNumber;
 
@@ -35,4 +33,7 @@ public class EmployeeEntity {
 
     @Column(name = "JOB_TITLE")
     private String jobTitle;
+
+    @Column(name = "PROFILE_PICTURE")
+    private String profilePicture;
 }
