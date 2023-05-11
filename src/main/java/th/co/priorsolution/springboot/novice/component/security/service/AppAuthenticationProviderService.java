@@ -45,8 +45,8 @@ public class AppAuthenticationProviderService {
 		if(null != masterUser) {
 			log.info(masterUser.toString());
 			authenticated = true;
-			credentials.setUsername(masterUser.getUserName());
-			credentials.setPassword(masterUser.getPassword());
+//			credentials.setUsername(masterUser.getUserName());
+//			credentials.setPassword(masterUser.getPassword());
 			
 			List<MasterUserRoleModel> userRoles = masterUserRoleRepository.findByMasterUserName(masterUser.getUserName());
 			if(!userRoles.isEmpty()) {

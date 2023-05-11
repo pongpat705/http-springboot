@@ -88,6 +88,49 @@ public class JasperGeneratorService {
 
     }
 
+    public void getPdf2(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse){
+
+        log.info("getPdf");
+        try{
+            httpServletResponse.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+            httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+            httpServletResponse.setHeader("Content-Disposition"
+                    , "attachment; filename=" + "normal"+ new Date().getTime()+".pdf");
+            OutputStream outputStream = httpServletResponse.getOutputStream();
+            String jasperFile = this.jasperFolder+"employees-report-birthday.jasper";
+
+            Map<String, Object> parameters = new HashMap();
+            parameters.put("start_birthdate", httpServletRequest.getParameter("start_birthdate"));
+            parameters.put("end_birthdate", httpServletRequest.getParameter("end_birthdate"));
+
+            outputStream.write(this.generateCustomerReport(jasperFile, parameters));
+            outputStream.flush();
+
+        } catch (Exception e) {
+            log.info("getPdf error {}",e.getMessage());
+
+            ResponseModel<Void> result = new ResponseModel<>();
+            result.setStatus(500);
+            result.setDescription("getPdf error "+e.getMessage());
+            ObjectMapper mapper = new ObjectMapper();
+            httpServletResponse.setHeader("Content-Disposition"
+                    , "inline");
+            httpServletResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            httpServletResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+
+            OutputStream outputStream = null;
+            try {
+                outputStream = httpServletResponse.getOutputStream();
+                outputStream.write(mapper.writeValueAsBytes(result));
+                outputStream.flush();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+
+        }
+
+    }
+
     public void getCsv(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse){
 
         String customerId = httpServletRequest.getParameter("customerId");

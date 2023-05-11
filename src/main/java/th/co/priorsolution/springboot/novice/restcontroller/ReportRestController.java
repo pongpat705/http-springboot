@@ -23,6 +23,11 @@ public class ReportRestController {
         this.jasperGeneratorService.getPdf(request, response);
     }
 
+    @GetMapping("/generate/normal/employees/pdf/")
+    public void getNormalEmployeePdf(HttpServletRequest request, HttpServletResponse response) {
+        this.jasperGeneratorService.getPdf2(request, response);
+    }
+
     @GetMapping("/generate/normal/csv")
     public void getNormalCsv(HttpServletRequest request, HttpServletResponse response) {
         this.jasperGeneratorService.getCsv(request, response);
