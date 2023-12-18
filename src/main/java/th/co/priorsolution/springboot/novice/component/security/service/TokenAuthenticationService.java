@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import th.co.priorsolution.springboot.novice.component.security.config.JwtProperties;
 import th.co.priorsolution.springboot.novice.component.security.model.AuthenticatedUsers;
 import th.co.priorsolution.springboot.novice.component.security.model.TokenResponseModel;
+import th.co.priorsolution.springboot.novice.logging.model.ComplexLog;
 import th.co.priorsolution.springboot.novice.model.ResponseModel;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,7 +39,7 @@ public class TokenAuthenticationService {
 	public ResponseModel<TokenResponseModel> generateToken(AuthenticatedUsers authentication) {
         // We generate a token now.
     	String build = writeAsString(authentication);
-    	log.info("gen username : "+authentication);
+    	log.info("gen username : {}",authentication, ComplexLog.builder().key(authentication.getName()).build());
         String JWT = Jwts.builder()
             .setSubject(build)
             .setExpiration(new Date(System.currentTimeMillis() + jwtProperties.getJwtExpirationTime()))
@@ -71,7 +72,7 @@ public class TokenAuthenticationService {
             if (claims != null) // we managed to retrieve a user
             { 
             	AuthenticatedUsers auth = stringToAuth(claims.getSubject());
-            	log.info("parse username : "+auth.getName());
+            	log.info("parse username : "+auth.getName(), ComplexLog.builder().key(auth.getName()).build());
                 return auth;
             } 
         } 

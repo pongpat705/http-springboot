@@ -47,7 +47,7 @@ public class ActorService {
                 result.setData(data);
                 result.setStatus(200);
                 result.setDescription("");
-                log.info("getActorById {} response 200", number, ComplexLog.builder().key(x.getName()).build().toMap()
+                log.info("getActorById {} response 200", number, ComplexLog.builder().key(x.getName()).data(data).build().toMap()
                 );
             }
         } catch (Exception e) {
