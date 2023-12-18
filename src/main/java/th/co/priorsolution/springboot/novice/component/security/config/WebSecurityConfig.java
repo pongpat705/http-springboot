@@ -27,7 +27,7 @@ public class WebSecurityConfig {
 			.disable()
 			.authorizeRequests()
 				.antMatchers("/service/authenticate").permitAll()
-				.antMatchers("/api/**").hasAnyAuthority("ROLE_STAFF")
+				.antMatchers("/api/**").authenticated()
 				.antMatchers("/generate/**").hasAuthority("ROLE_STAFF")
 				.antMatchers("/upload/**").hasAuthority("ROLE_STAFF")
 			.and()

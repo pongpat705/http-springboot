@@ -7,12 +7,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery;
 import th.co.priorsolution.springboot.novice.entity.EmployeeEntity;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-public class EmployeeRepositoryTestImpl implements EmployeeRepository{
+public class EmployeeRepositoryTestOkImpl implements EmployeeRepository{
     @Override
     public List<EmployeeEntity> findAll() {
         return null;
@@ -65,7 +64,8 @@ public class EmployeeRepositoryTestImpl implements EmployeeRepository{
 
     @Override
     public <S extends EmployeeEntity> S save(S entity) {
-        throw new RuntimeException("xxx");
+        entity.setEmployeeNumber("xxxx");
+        return entity;
     }
 
     @Override

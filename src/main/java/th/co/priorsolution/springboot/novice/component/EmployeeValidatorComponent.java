@@ -1,5 +1,6 @@
 package th.co.priorsolution.springboot.novice.component;
 
+import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import th.co.priorsolution.springboot.novice.model.EmployeeResponseModel;
@@ -38,6 +39,13 @@ public class EmployeeValidatorComponent {
             e.setDescription("email empty");
             errorModelList.add(e);
         }
+        boolean isEmailNotValid = validateFalseEmail(employeeModel.getEmail());
+        if(isEmailNotValid){
+            ErrorModel e = new ErrorModel();
+            e.setCode("02");
+            e.setDescription("invalid email");
+            errorModelList.add(e);
+        }
         if(StringUtils.isEmpty(employeeModel.getExtension())){
             ErrorModel e = new ErrorModel();
             e.setCode("01");
@@ -60,5 +68,9 @@ public class EmployeeValidatorComponent {
 
         return errorModelList;
 
+    }
+
+    private boolean validateFalseEmail(String email) {
+        return false;
     }
 }

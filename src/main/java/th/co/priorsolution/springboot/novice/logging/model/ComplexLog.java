@@ -32,14 +32,18 @@ public class ComplexLog {
     private String stage;
     private Object data;
 
-    @SneakyThrows
     public StructuredArgument toMap(){
         Map myMap = new HashMap();
         myMap.put("key", key);
         myMap.put("logType", logType);
         myMap.put("stage", stage);
         if(null != data){
-            myMap.put("data", objectMapper.writeValueAsString(data));
+            try {
+                myMap.put("data", objectMapper.writeValueAsString(data));
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+
         }
 
         return new MapEntriesAppendingMarker(myMap);
